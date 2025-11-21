@@ -1,6 +1,6 @@
 import pygame
-from constants import SCREEN_WIDTH
-from breakout_rectangle import BreakoutRectangle
+from ..constants import SCREEN_WIDTH
+from .breakout_rectangle import BreakoutRectangle
 
 class BreakoutPlayer(BreakoutRectangle):
     def __init__(self, top: float, left: float, width: int = 100, height: int = 5, speed: float = 500):

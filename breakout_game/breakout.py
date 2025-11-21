@@ -1,12 +1,12 @@
 import pygame
-from breakout_block import BreakoutBlock
-from breakout_player import BreakoutPlayer
-from breakout_ball import BreakoutBall
-from collision import CollisionManager
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 import math
+from .objects.breakout_block import BreakoutBlock
+from .objects.breakout_player import BreakoutPlayer
+from .objects.breakout_ball import BreakoutBall
+from .objects.collision import CollisionManager
+from .constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
-if __name__ == "__main__":
+def main():
     # pygame setup
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

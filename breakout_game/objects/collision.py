@@ -1,8 +1,8 @@
-from breakout_ball import BreakoutBall
-from breakout_block import BreakoutBlock
-from breakout_player import BreakoutPlayer
-from breakout_rectangle import BreakoutRectangle
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from .breakout_ball import BreakoutBall
+from .breakout_block import BreakoutBlock
+from .breakout_player import BreakoutPlayer
+from .breakout_rectangle import BreakoutRectangle
+from ..constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from enum import Enum
 import math
 
