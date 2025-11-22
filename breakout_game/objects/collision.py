@@ -369,6 +369,7 @@ class CollisionManager:
         collision_info = self._check_rect_collision(ball, player, dt, True)
         # We only care about vertical collisions
         if collision_info.is_collision:
+            player.collisions += 1
             coll_x = collision_info.contact_point[0]
             coll_y = collision_info.contact_point[1]
             # If the ball hit the top of the player

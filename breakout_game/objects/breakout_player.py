@@ -20,6 +20,8 @@ class BreakoutPlayer(BreakoutRectangle):
         self._top = top
         self._left = left
         self._rect = pygame.Rect(left, top, width, height)
+        self.last_step_collisions = 0
+        self.collisions = 0
 
     def draw(self, surface: pygame.Surface):
         """Draws the player to the surface
@@ -29,24 +31,31 @@ class BreakoutPlayer(BreakoutRectangle):
         """
         pygame.draw.rect(surface, pygame.Color(0, 0, 255), self._rect)
 
-    def update(self, dt: float):
+    def update(self, dt: float, override_player_action: int = None):
         """Updates the player position
 
         Arguments:
             dt {float} -- Change in time
         """
-        keys = pygame.key.get_pressed()
-        direction = 0
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            direction = -1
-        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            direction = 1
+        direction = None
+        if override_player_action is not None:
+            if override_player_action == 1:
+                direction = -1
+            elif override_player_action == 2:
+                direction = 1
+        else:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+                direction = -1
+            elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+                direction = 1
 
-        self.left += self.speed * direction * dt
-        if self.left <= 0:
-            self.left = 0
-        elif self.left >= SCREEN_WIDTH - self.width:
-            self.left = SCREEN_WIDTH - self.width
+        if direction is not None:
+            self.left += self.speed * direction * dt
+            if self.left <= 0:
+                self.left = 0
+            elif self.left >= SCREEN_WIDTH - self.width:
+                self.left = SCREEN_WIDTH - self.width
 
     @property
     def top(self):

@@ -24,6 +24,7 @@ class BreakoutBall:
         self.init_dx = dx
         self.dy = dy
         self.last_collision_point = [-1, -1]
+        self.dead = False
 
     def draw(self, surface: pygame.Surface):
         """Draws the ball to the pygame surface
@@ -55,8 +56,10 @@ class BreakoutBall:
             self.y = self.radius
             self.dy = abs(self.dy)
         elif self.y + self.radius > SCREEN_HEIGHT:
-            self.y = SCREEN_HEIGHT - self.radius
-            self.dy = -abs(self.dy)
+            self.dead = True
+            # self.y = SCREEN_HEIGHT - self.radius
+            # self.dy = -abs(self.dy)
+        return self.dead
 
     def get_speed(self) -> float:
         """Gets the speed of the ball
