@@ -390,6 +390,9 @@ class CollisionManager:
                 ball.dy = math.sin(new_angle) * ball_speed
                 ball.update(time_left)
 
+                player.last_left_collision = player.left
+                player.last_top_collision = player.top
+
     def _get_collision_type(self, ball: BreakoutBall, rect: BreakoutRectangle,
                             dt: float, is_player: bool = False) -> tuple[CollisionType, tuple[float], float]:
         """Gets the specific type of collision between a ball and rectangle

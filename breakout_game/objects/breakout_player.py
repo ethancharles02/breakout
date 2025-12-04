@@ -22,6 +22,8 @@ class BreakoutPlayer(BreakoutRectangle):
         self._rect = pygame.Rect(left, top, width, height)
         self.last_step_collisions = 0
         self.collisions = 0
+        self.last_left_collision = self._left
+        self.last_top_collision = self._top
 
     def draw(self, surface: pygame.Surface):
         """Draws the player to the surface

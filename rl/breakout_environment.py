@@ -8,11 +8,15 @@ class BreakoutEnv(gym.Env):
     def __init__(self, display_graphics: bool = False):
         super().__init__()
 
-        # Observe the x position of the paddle, x, y position of ball, and ball dx/dy
+        # Observe the following:
+        #   x position of the paddle,
+        #   last ball collision x of the player
+        #   x, y position of ball,
+        #   ball dx/dy, and TODO: Add every position of the Breakout blocks.
         # We'll normalize observations (positions -> [0,1], velocities -> [-1,1])
         self.ball_start_speed = 200
-        low_bounds = np.array([0.0, 0.0, 0.0, -1.0, -1.0], dtype=np.float32)
-        high_bounds = np.array([1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float32)
+        low_bounds = np.array([0.0, 0.0, 0.0, 0.0, -1.0, -1.0], dtype=np.float32)
+        high_bounds = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0], dtype=np.float32)
         self.observation_space = spaces.Box(low=low_bounds, high=high_bounds, dtype=np.float32)
 
         # Movement is stay, left, or right
@@ -85,7 +89,8 @@ class BreakoutEnv(gym.Env):
         return observation, reward, terminated, truncated, info
 
     def _get_observation(self):
-        paddle_x = float(self.simulation_state.player.left)
+        paddle_x = float(self.simulation_state.player.left + self.simulation_state.player.width / 2)
+        last_x_hit = float(self.simulation_state.player.last_left_collision + self.simulation_state.player.width / 2)
         ball_x = 0.0
         ball_y = 0.0
         ball_dx = 0.0
@@ -99,35 +104,35 @@ class BreakoutEnv(gym.Env):
 
         # Normalize positions to [0,1], velocities to [-1,1]
         norm_paddle_x = paddle_x / float(SCREEN_WIDTH)
+        norm_last_x_hit = last_x_hit / float(SCREEN_WIDTH)
         norm_ball_x = ball_x / float(SCREEN_WIDTH)
         norm_ball_y = ball_y / float(SCREEN_HEIGHT)
         maxs = max(self._max_ball_speed, 1.0)
         norm_dx = ball_dx / maxs
         norm_dy = ball_dy / maxs
 
-        return np.array([norm_paddle_x, norm_ball_x, norm_ball_y, norm_dx, norm_dy], dtype=np.float32)
+        return np.array([norm_paddle_x, norm_last_x_hit, norm_ball_x, norm_ball_y, norm_dx, norm_dy], dtype=np.float32)
 
     def _calculate_reward(self):
-        # Reward for breaking blocks (sparse), plus shaping terms to encourage
-        # tracking the ball and keeping it in play.
+        # Reward for breaking blocks
         broken_blocks = self.simulation_state.last_steps_block_count - len(self.simulation_state.blocks)
-        reward = float(broken_blocks)
+        reward = float(broken_blocks * 2)
 
         # Small negative per-step penalty to discourage inaction
         reward += -0.001
-
         # Penalize distance between paddle center and ball x (encourages tracking)
-        if len(self.simulation_state.balls) > 0:
-            paddle_center = self.simulation_state.player.left + self.simulation_state.player.width / 2
-            ball_x = self.simulation_state.balls[0].x
-            dist = abs(paddle_center - ball_x)
-            reward += -0.01 * dist
+        # if len(self.simulation_state.balls) > 0:
+        #     paddle_center = self.simulation_state.player.left + self.simulation_state.player.width / 2
+        #     ball_x = self.simulation_state.balls[0].x
+        #     dist = abs(paddle_center - ball_x)
+        #     reward += -0.0005 * dist
+        # TODO try one last reward of whenever the ball hits the paddle
 
         # Terminal rewards
         if self.simulation_state.game_over:
-            reward += -5.0
+            reward += -20.0
         elif self.simulation_state.game_win:
-            reward += 5.0
+            reward += 20.0
 
         return reward
 
